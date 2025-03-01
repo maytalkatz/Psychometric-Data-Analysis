@@ -1,4 +1,4 @@
-# Signal Detection and Perceptual Integration Analysis Tool
+# Psychometric Data Analysis Tool
 
 ## Overview
 This Python-based program is developed to analyze psychometric data collected in my research. It automates data processing and psychometric analysis to quantify how mice integrate sensory signals and make decisions in a vibrotactile stimulus detection task. The program compares **unilateral and bilateral performance**, where one side receives a constant sub-threshold stimulus while the other varies in intensity (0-1). As my research progresses, the program will evolve to incorporate optogenetic inhibition experiments to assess how different brain areas influence perception and decision-making.
