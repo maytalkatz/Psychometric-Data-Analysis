@@ -1,25 +1,71 @@
-# Psychometric Data Analysis
+# Signal Detection and Perceptual Integration Analysis Tool
 
 ## Overview
-This project focuses on developing a Python-based program to analyze psychometric data collected from mice engaged in a vibrotactile stimulus detection task. The program will process behavioral data stored in `.mat` files and perform signal detection theory (SDT) analyses. 
-
-The program will be designed to receive raw behavioral data from `.mat` files. it will recieve an input of specific day ranges (e.g., Day 19-20) and mouse IDs (e.g., O1, O2). It will output analyzed psychometric data for the selected mice and days. While this project proposal focuses on the program’s preliminary functionality, the tool will ultimately be integrated into the user's broader research efforts as the data set and experimental conditions expand.
+This Python-based program is developed to analyze psychometric data collected in my research. It automates data processing and psychometric analysis to quantify how mice integrate sensory signals and make decisions in a vibrotactile stimulus detection task. The program compares **unilateral and bilateral performance**, where one side receives a constant sub-threshold stimulus while the other varies in intensity (0-1). As my research progresses, the program will evolve to incorporate optogenetic inhibition experiments to assess how different brain areas influence perception and decision-making.
 
 ## Objectives
-1. Develop a Python program capable of analyzing psychometric data from tactile stimulus detection tasks.
-2. Automate data processing and analysis, incorporating SDT metrics such as hit rates, false alarm rates, sensitivity (d'), and criterion (c).
-3. Lay the groundwork for future program development, which will include analyzing data from optogenetic photoinhibition experiments and supporting additional analytical features.
+This program streamlines behavioral data analysis, enabling efficient and accurate processing of results. The **raw behavioral data is collected using a LabVIEW program developed by my lab mate, PhD student Michael Sokoletsky**. The tool automates psychometric curve fitting based on **signal detection theory (SDT)**, computing sensory thresholds and comparing unilateral and bilateral conditions. It establishes a structured pipeline for analyzing data and will later support optogenetic inhibition experiments.
 
-## Problem Statement and Significance
-Understanding how mice perceive and respond to tactile stimuli is crucial for studying sensory processing and decision-making. Current methods for analyzing behavioral data often require manual processing, which can be time-consuming and prone to error. This project addresses these challenges by creating an automated, flexible tool tailored to the user's research needs. The program will streamline psychometric data analysis, ensure accuracy and reproducibility, and enable efficient data processing for large-scale experiments. By automating critical aspects of the analysis, it will free up time for deeper exploration of sensory processing and decision-making in mice.
+## Methodology
 
-## Proposed Approach
-1. **Data Input:** The program will accept `.mat` files containing raw behavioral data, allowing the user to specify:
-   - Day ranges (e.g., Day 19-20).
-   - Mouse IDs (e.g., O1, O2).
-2. **Data Analysis:** The program will compute key psychometric parameters, including:
-   - Hit rate and false alarm rate.
-   - Sensitivity (d') and criterion (c) based on SDT.
-3. **Output:** The analyzed data will be presented as psychometric curves, highlighting key trends and insights.
-4. **Future Development:** While not part of this proposal, the program will later incorporate functionality for analyzing optogenetic data and additional experimental conditions.
+- **Data Loading and GUI**
+  - The program allows the user to select a base folder and automatically loads MATLAB files matching the given mouse ID and day range.
+  - It ensures correct directory navigation, checking whether the provided base folder already contains the mouse ID before appending it to the path.
+  - Built with Tkinter, the GUI simplifies data selection and execution, ensuring correct file handling and preventing manual input errors.
+
+- **Data Extraction & Preprocessing**
+  - Relevant variables such as trial types, stimulus strengths, and optogenetic stimulation details are extracted.
+  - Rounding errors in stimulus strengths are corrected, and maximum intensity values as well as sub-threshold levels are identified to ensure accurate categorization.
+  - The data is compiled into a structured DataFrame for further analysis.
+
+- **Psychometric Analysis**
+  - Trials are categorized into unilateral and bilateral conditions, where the non-dominant side remains at a fixed sub-threshold intensity, and detection performance is assessed across varying stimulus intensities.
+  - **psignifit**, a third-party Python package, is used for **nonlinear regression analysis** of psychometric functions. Specifically, the **Weibull function** is applied to model the probability of a correct response based on stimulus intensity, allowing for precise estimation of sensory thresholds.
+  - If there is insufficient data for analysis, the program generates an error message prompting the user to select more files.
+
+## Significance and Future Directions
+This program enhances the efficiency and accuracy of analyzing large datasets, ensuring reproducible results in behavioral research. Currently, the analysis is limited to **'no optogenetic stimulation'** data, as there is not yet sufficient data from other conditions. Future updates will incorporate optogenetic inhibition analysis, enabling direct comparisons between **control** and manipulated conditions to determine how suppressing specific brain regions affects sensory integration and decision-making. Further improvements will expand SDT metrics, such as **sensitivity (d′) and decision criterion (c)**, to refine performance characterization.
+
+
+## Usage
+### Requirements
+- **Python 3.10+**
+- **Required Python Packages:** `numpy`, `pandas`, `matplotlib`, `scipy`, `psignifit`
+- Install required dependencies using:
+  ```bash
+  pip install numpy pandas matplotlib scipy psignifit
+  ```
+
+### Running the Program
+1. **Clone the repository:**
+   ```bash
+    git clone https://github.com/maytalkatz/Psychometric-Data-Analysis.git
+    cd Psychometric-Data-Analysis
+
+   ```
+   Alternatively, download the project files manually.
+
+2. **Run the program:**
+   ```bash
+   python psychometric_analysis.py
+   ```
+   Alternatively, you can run the program using the Run button in VSC. The program will open a GUI to assist with folder selection and parameter entry.
+
+3. **Select Data:**
+   - Choose the base folder containing `.mat` files.
+   - Enter the **mouse ID** and **day range** for analysis.
+
+4. **View the Output:**
+   - The program will process data and generate psychometric curves.
+   - If insufficient data is available, an error message will indicate the need to select more files.
+
+### Testing the Code
+The program includes built-in validation steps to ensure correct functionality. If unexpected results occur, check the following:
+- **Folder Selection:** Ensure the correct folder containing `.mat` files is chosen.
+- **Dependencies:** Verify that all required Python packages are correctly installed.
+- **Sufficient Data:** Make sure enough days are selected for analysis. If necessary, increase the range of days included in the input.
+
+
+#
+This program was developed as a **final project** for a **basic programming skills in Python** course. Moving forward, it will be further developed to meet my research needs, integrating additional functionalities for more advanced psychometric analysis and expanding its capabilities to support optogenetic inhibition experiments.
 
