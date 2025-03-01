@@ -499,7 +499,7 @@ def plotPrior(result,
     plt.plot(xlapse,ylapse,lw=lineWidth,c=lineColor)
     #plt.hold(True)
     plt.xlim([0,.5])
-    plt.title('\lambda',fontsize=18)
+    plt.title(r'\lambda',fontsize=18)
 
     plt.subplot(2,3,6)
     plt.plot(data[:,0],np.zeros(data[:,0].size),'k.',ms=markerSize*.75)
