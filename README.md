@@ -76,8 +76,8 @@ This program enhances the efficiency and accuracy of analyzing large datasets, e
    Alternatively, you can run the program using the Run button in VSC. The program will open a GUI to assist with folder selection and parameter entry.
 
 3. **Select Data:**
-   - Choose the base folder containing `.mat` files.
-   - Enter the **mouse ID** and **day range** for analysis.
+   - Choose the base folder containing `.mat` files by browsing.
+   - Enter the **mouse ID** and **day range** for analysis. The mouse ID for the example files provided in this repository is O2 and the range of days are 16-22.
 
 4. **View the Output:**
    - The program will process data and generate psychometric curves.
