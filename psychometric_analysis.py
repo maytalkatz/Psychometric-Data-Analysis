@@ -2,7 +2,7 @@
 # 1st part - Data Processing Functions:
 # 1. loading the the mat files
 # 2. Extracting the relevant data into a DataFrame
-# 3. Process stim data(?)
+# 3. Process stimuli data, find the sub TH and max values for each side
 # 4. Generate psychometric matrices and store them by optostim and stimulus condition
 # 5. Deletes rows of intensities with less than 10 trials
 # 6. Filter only the 'none' optoStim condition 
@@ -99,7 +99,7 @@ def process_stim_data(df):
         mask = np.isclose(df[col] % 1, 0.99, atol=1e-6) | np.isclose(df[col] % 1, 0.49, atol=1e-6)
         df.loc[mask, col] += 0.01
 
-    # Find max stimuli for each side:
+    # Find max stimuli for each side
     def find_valid_max(series):
         sorted_values = series[series > 0].value_counts().sort_index(ascending=False)
         valid = sorted_values[sorted_values > 20]
@@ -107,7 +107,8 @@ def process_stim_data(df):
 
     max_L = find_valid_max(df['stim_left'])
     max_R = find_valid_max(df['stim_right'])
-    
+
+    # Find sub TH value for each side
     bilateral_trials = df[(df['stim_left'] > 0) & (df['stim_right'] > 0)]
     sub_th_L = bilateral_trials[(bilateral_trials['stim_right'] == max_R) & 
                                 (bilateral_trials['stim_left'] != max_R)]['stim_left'].value_counts()
@@ -179,14 +180,14 @@ def filter_matrices_by_trials(matrices_dict, min_trials=10):
         filtered_dict[key] = filtered_matrix
     return filtered_dict
 
-def filter_none_matrices(matrices_dict):
+def filter_none_matrices(filtered_mats):
     """
     In the matrices_dict dictionary, each key is made up of two parts: the first part indicates the optoStim condition (like 'none') and 
     the second part describes the trial type (such as 'Unilateral L'). This function returns a new dictionary containing only the items 
     with 'none' as the optoStim condition.
     """
 
-    return {k: v for k, v in matrices_dict.items() if k[0] == 'none'}
+    return {k: v for k, v in filtered_mats.items() if k[0].lower() == 'none'}
 
 def fit_psychometric_curves(none_mats):
     """
@@ -397,14 +398,15 @@ def run_processing(params):
             return
 
         all_trials_df, sub_th_L, sub_th_R = process_stim_data(all_trials_df)
+        
         psychometric_matrices = generate_psychometric_matrices(all_trials_df, sub_th_L, sub_th_R)
-        psychometric_matrices_filtered = filter_matrices_by_trials(psychometric_matrices, min_trials=10)
-        day_range = f"Day {day_start}-{day_end}"
-        day_range = f"Day {day_start}-{day_end}"
-        none_mats = filter_none_matrices(psychometric_matrices_filtered)
+        filtered_mats = filter_matrices_by_trials(psychometric_matrices, min_trials=10)
+        none_mats = filter_none_matrices(filtered_mats)
         if not none_mats:
             print("No matrices found for optoStim 'none'.")
             return
+        
+        day_range = f"Day {day_start}-{day_end}"
         opto_name = list(none_mats.keys())[0][0]
         fit_results = fit_psychometric_curves(none_mats)
         plot_fit_results(fit_results, mouse_id, day_range, opto_name, sub_th_L, sub_th_R)
